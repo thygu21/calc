@@ -14,7 +14,7 @@
         $(document).ready(function()
         {
             $('.qna').popover({trigger:"focus", title: "도움말", content: "도움이 필요한 버튼을 눌러보세요.", html: true, placement: "right"}); 
-            $('.vector').popover({content: "<button type='button' class='btn key btn-default vectorSub procession' value='DO'>dot</button><button type='button' class='btn key btn-default vectorSub procession' value='CR'>cross</button>", html: true, placement: "right"}); 
+            $('.vector').popover({trigger:"focus", content: "<button type='button' class='btn key btn-default vectorSub procession' value='DO'>dot</button><button type='button' class='btn key btn-default vectorSub procession' value='CR'>cross</button>", html: true, placement: "right"}); 
             $('.func').popover({content: "<button type='button' class='btn key btn-default funcSub'>f()</button><button type='button' class='btn key btn-default funcSub'>g()</button>", html: true, placement: "left"}); 
             $('.variable').popover({content: "<button type='button' class='btn key btn-default variableSub pc'>x</button><button type='button' class='btn key btn-default variableSub pc'>y</button><button type='button' class='btn key btn-default variableSub pc'>z</button>", html: true, placement: "top"}); 
             let parser = math.parser();
@@ -38,6 +38,12 @@
                     console.log(1);
                 }
 
+                $(".qna").click(function(k)
+                {
+                    k.stopPropagation();
+                    console.log(2);
+                });
+
                 if($(this).val() == 'PR' || $(this).val() == 'DO' || $(this).val() == 'CR') //행렬식 대입을 위한 토글창 오픈
                 {
                     if($(this).val() == 'DO' || $(this).val() == 'CR')
@@ -56,10 +62,9 @@
 
                     if($("#plustab").is(':visible')) // plustab이 보일 때
                     {
-                        $(".pc").click(function(k) // 숫자+변수+기본함수 버튼을 눌렀을 때
+                        $(".pc").click(function() // 숫자+변수+기본함수 버튼을 눌렀을 때
                         {
                             displayProcess += $(this).text()
-                            console.log(rows, cols);
                             $(".row-"+rows+".col-"+cols).val(displayProcess);
                         });
 
@@ -90,7 +95,7 @@
 
                         $(".modify").click(function() // 행렬 크기 조절버튼 혹은 대입 버튼을 눌렀을 때
                         {
-                            if($(this).val() == 'DN' && mxrows < 5)
+                            if($(this).val() == 'DN' && mxrows < 5) // 아래로 늘리기
                             {
                                 mxrows += 1;
                                 $("#myTable").append("<tr id='row-" + mxrows + "'></tr>");
@@ -104,7 +109,7 @@
                                 $("#row-"+mxrows).append("<td class='lastcol'>]</td>");
                                 
                             }
-                            else if($(this).val() == 'RI' && mxcols < 5) // 행렬 크기 제한
+                            else if($(this).val() == 'RI' && mxcols < 5) // 오른쪽으로 늘리기
                             {
                                 $(".lastcol").remove();
                                 mxcols += 1;
@@ -118,10 +123,23 @@
                             else if($(this).val() == "EN")
                             {
                                 displayValue += "(";
-
+                                for(i = 1; i <= mxrows; i++)
+                                {
+                                    displayValue += "[";
+                                    displayValue += $(".row-"+i+".col-1").val();
+                                    for(j = 2; j <= mxcols; j++)
+                                    {
+                                        displayValue += ",";
+                                        displayValue += $(".row-"+i+".col-"+j).val();
+                                    }
+                                    displayValue += "]";
+                                    displayValue += ",";
+                                }
+                                displayValue = displayValue.slice(0,-1); //,하나 지우기
                                 displayValue += ")";
 
                                 $('#result').text(displayValue);
+                                mxrows, mxcols, rows, cols = 2, 2, 1, 1;
                                 $('#plustab').hide();
                             }
 
@@ -233,7 +251,7 @@
                   </select>
             </div>
             <div class="col-xs-2 RightLayout">
-                <button type="button" class="btn btn-success erase qna" value="Help">
+                <button type="button" class="btn btn-success erase qna key" value="Help">
                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                 </button>
             </div>
