@@ -14,117 +14,195 @@
         $(document).ready(function()
         {
             $('.qna').popover({trigger:"focus", title: "도움말", content: "도움이 필요한 버튼을 눌러보세요.", html: true, placement: "right"}); 
-            $('.vector').popover({content: "<button type='button' class='btn key btn-default vectorSub procession'>dot</button><button type='button' class='btn key btn-default vectorSub procession'>cross</button>", html: true, placement: "right"}); 
+            $('.vector').popover({content: "<button type='button' class='btn key btn-default vectorSub procession' value='DO'>dot</button><button type='button' class='btn key btn-default vectorSub procession' value='CR'>cross</button>", html: true, placement: "right"}); 
             $('.func').popover({content: "<button type='button' class='btn key btn-default funcSub'>f()</button><button type='button' class='btn key btn-default funcSub'>g()</button>", html: true, placement: "left"}); 
-            $('.variable').popover({content: "<button type='button' class='btn key btn-default variableSub'>x</button><button type='button' class='btn key btn-default variableSub'>y</button><button type='button' class='btn key btn-default variableSub'>z</button>", html: true, placement: "top"}); 
-            var parser = math.parser();
+            $('.variable').popover({content: "<button type='button' class='btn key btn-default variableSub pc'>x</button><button type='button' class='btn key btn-default variableSub pc'>y</button><button type='button' class='btn key btn-default variableSub pc'>z</button>", html: true, placement: "top"}); 
+            let parser = math.parser();
 
-            var displayValue = '0';
-            
+            let displayValue = '0';
+            let displayProcess = '';
+
+            let mxrows = 2;
+            let mxcols = 2;
+            let rows = 1;
+            let cols = 1;
             $('#result').text(displayValue);
-            
-            if($(this).val() == 'Help')
+
+            $(document).on("click",".key",function(e) //키 입력, 사실상 메인
             {
-                console.log(1);
-            }
-
-
-            $(document).on("click",".procession",function(e)
-            {
-                $('#plustab').slideToggle("fast","swing");
-            })
-
-            $(document).on("click",".modify",function(e) //행렬식 넣기
-            {
-                var procession = ["["];
-
-
-
-
-
-
-
-
-                $(document).on("click",".enter",function(e)
-                {   
-                    displayValue += "(";
-                    for (i in procession)
-                    {
-                        displayValue += "(" + ? + ")";
-                    }
-                    displayValue += ")";
-                })
-            })
-
-            $(document).on("click",".key",function(e)
-            {
-                console.log(123);
-                if(displayValue == '0') displayValue = '';
-                if($(this).val() == 'EV')
+                if(displayValue == '0') 
+                    displayValue = '';
+                
+                if($(this).val() == 'Help') // 도움말 처리
                 {
-                    try
-                    {
-                        displayValue = parser.eval(displayValue).toString();
-                        var tokens = displayValue.split(' ');
-                        if(tokens[0] == 'function')
-                        {
-                            displayValue = tokens[0];
-                        }
-                        $('#result').text(displayValue);                         
-                        displayValue = '0';
-                    }
-                    catch (e)
-                    {
-                        displayValue = '0';
-                        if(displayValue != 'function')
-                        {
-                            $('#result').text(e);
-                        }
-                    }               
+                    console.log(1);
                 }
-                else
+
+                if($(this).val() == 'PR' || $(this).val() == 'DO' || $(this).val() == 'CR') //행렬식 대입을 위한 토글창 오픈
                 {
-                    if($(this).val() == 'CL')
+                    if($(this).val() == 'DO' || $(this).val() == 'CR')
+                        displayValue += $(this).text();
+                    
+                    if($("#plustab").is(':visible'))
                     {
-                        displayValue = '0';
-                        $('#result').text(displayValue);
-                    }
-                    else if($(this).val() == 'RM')
-                    {   
-                        var context = displayValue.slice(-3,length.displayValue);
-                        if(context == "sin" || context == "cos" || context == "tan" || context == "exp" || context == "log" || context == "qrt" || context == "dot" || context == "oss")
-                        {
-                            if(context == "qrt")
-                            {
-                                displayValue = displayValue.slice(0,-4);
-                            }
-                            else if(context == "oss")
-                            {
-                                displayValue = displayValue.slice(0,-5);
-                            }
-                            else
-                                displayValue = displayValue.slice(0,-3);
-                        }
-                        else
-                        {
-                            displayValue = displayValue.slice(0,-1);
-                        }
-                        $('#result').text(displayValue);
+                        $('#plustab').hide();
                     }
                     else
-                    {                        
-                        displayValue += $(this).text();
-                        if($(this).text() == "cross")
-                        {
-                            
-                        }
-                        $('#result').text(displayValue);
+                    {
+                        $('#plustab').show();
                     }
+                    
+                    $(".row-"+rows+".col-"+cols).focus(); // 정해진 칸에 포커스
+
+                    if($("#plustab").is(':visible')) // plustab이 보일 때
+                    {
+                        $(".pc").click(function(k) // 숫자+변수+기본함수 버튼을 눌렀을 때
+                        {
+                            displayProcess += $(this).text()
+                            console.log(rows, cols);
+                            $(".row-"+rows+".col-"+cols).val(displayProcess);
+                        });
+
+                        $(".next").click(function() // 칸 이동
+                        {
+                            displayProcess = '';
+
+                            if(cols < mxcols) //  행 이동
+                                cols += 1;
+                            else if(rows < mxrows) //같은 행의 숫자가 다 찼으면 한 열 아래로
+                            {
+                                rows += 1;
+                                cols = 1;
+                            }
+                            else // 모든 칸이 다 찼으면 1열 1칸으로 이동
+                            {
+                                cols = 1
+                                rows = 1
+                            }
+
+                        }); 
+
+                        $('.arrow').click(function() // 행렬 칸 내에서의 지우기
+                        {
+                            displayProcess = remove(displayProcess);
+                            $(".row-"+rows+".col-"+cols).val(displayProcess);
+                        });
+
+                        $(".modify").click(function() // 행렬 크기 조절버튼 혹은 대입 버튼을 눌렀을 때
+                        {
+                            if($(this).val() == 'DN' && mxrows < 5)
+                            {
+                                mxrows += 1;
+                                $("#myTable").append("<tr id='row-" + mxrows + "'></tr>");
+                                $("#row-"+mxrows).append("<td>[</td>");
+                                $("#row-"+mxrows).append("<td><input type='text' class='form-control key vectorInsert row-" + mxrows + " col-1' value='0'></td>");
+                                for(i = 2; i <= mxcols; i++)
+                                {
+                                    $("#row-"+mxrows).append("<td>,</td>");
+                                    $("#row-"+mxrows).append("<td><input type='text' class='form-control key vectorInsert row-" + mxrows + " col-" + i + "' value='0'></td>");
+                                }
+                                $("#row-"+mxrows).append("<td class='lastcol'>]</td>");
+                                
+                            }
+                            else if($(this).val() == 'RI' && mxcols < 5) // 행렬 크기 제한
+                            {
+                                $(".lastcol").remove();
+                                mxcols += 1;
+                                for(i = 1; i <= mxrows; i++)
+                                {
+                                    $("#row-"+i).append("<td>,</td>");
+                                    $("#row-"+i).append("<td><input type='text' class='form-control key vectorInsert row-" + i + " col-" + mxcols + "' value='0'></td>");
+                                    $("#row-"+i).append("<td class='lastcol'>]</td>");
+                                }
+                            }
+                            else if($(this).val() == "EN")
+                            {
+                                displayValue += "(";
+
+                                displayValue += ")";
+
+                                $('#result').text(displayValue);
+                                $('#plustab').hide();
+                            }
+
+                        });
+                    }
+
                 }
 
+                if($("#plustab").is(":hidden")) // plustab이 보이지 않을 때
+                {
+                    if($(this).val() == 'EV') // 계산하기 버튼 누를 때
+                    {
+                        try
+                        {
+                            displayValue = parser.eval(displayValue).toString();
+                            let tokens = displayValue.split(' ');
+                            if(tokens[0] == 'function')
+                            {
+                                displayValue = tokens[0];
+                            }
+                            $('#result').text(displayValue);                         
+                            displayValue = '0';
+                        }
+                        catch (e)
+                        {
+                            displayValue = '0';
+                            if(displayValue != 'function')
+                            {
+                                $('#result').text(e);
+                            }
+                        }     
+
+                    }
+                    else
+                    {
+                        if($(this).val() == 'CL') // 지우기 버튼을 누를 때
+                        {
+                            displayValue = '0';
+                            $('#result').text(displayValue);
+                        }
+                        else if($(this).val() == 'RM') // 백스페이스 버튼을 누를 때
+                        {   
+                            displayValue = remove(displayValue);
+                            $('#result').text(displayValue);
+                        }
+                        else if($(this).val() != "PR" && $(this).val() != "VE" && $(this).val() != "Help") // 벡터 와 행렬 한글을 출력하지 않게 함           
+                        {        
+                            displayValue += $(this).text();
+                            $('#result').text(displayValue);
+                        }
+
+                    }
+                }
                 e.preventDefault()
             })
         })
+
+        function remove(display)
+        {
+            let context = display.slice(-3,length.display);
+            // 여러 함수에 대한 한번에 지우기 처리
+            if(context == "sin" || context == "cos" || context == "tan" || context == "exp" || context == "log" || context == "qrt" || context == "dot" || context == "oss")
+            {
+                if(context == "qrt")
+                {
+                    display = display.slice(0,-4);
+                }
+                else if(context == "oss")
+                {
+                    display = display.slice(0,-5);
+                }
+                else
+                    display = display.slice(0,-3);
+            }
+            else // 일반 숫자나 한자리의 연산에 대한 지우기 처리
+            {
+                display = display.slice(0,-1);
+            }
+            
+            return display;
+        }
     </script>
 </head>
  
@@ -162,16 +240,16 @@
         </div>
         <div class="row">
             <div class="col-xs-9">
-                <button type="button" class="btn key btn-primary vectorLeft">sin</button>
-                <button type="button" class="btn key btn-primary vectorLeft">cos</button>
-                <button type="button" class="btn key btn-primary vectorLeft">tan</button></br>
-                <button type="button" class="btn key btn-info vectorLeft">exp</button>
-                <button type="button" class="btn key btn-info vectorLeft">log</button>
-                <button type="button" class="btn key btn-info vectorLeft">sqrt</button>
+                <button type="button" class="btn key btn-primary vectorLeft pc">sin</button>
+                <button type="button" class="btn key btn-primary vectorLeft pc">cos</button>
+                <button type="button" class="btn key btn-primary vectorLeft pc">tan</button></br>
+                <button type="button" class="btn key btn-info vectorLeft pc">exp</button>
+                <button type="button" class="btn key btn-info vectorLeft pc">log</button>
+                <button type="button" class="btn key btn-info vectorLeft pc">sqrt</button>
             </div>
             <div class="col-xs-3 RightLayout">
-                <button type="button" class="btn btn-popover procession vectorRight">행렬<span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button>
-                <button type="button" class="btn btn-popover vectorRight vector">벡터<span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button>
+                <button type="button" class="btn key btn-popover procession vectorRight" value="PR">행렬<span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button>
+                <button type="button" class="btn key btn-popover vectorRight vector" value="VE">벡터<span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span></button>
             </div>
         </div>
         <div class="row bg-warning">
@@ -180,29 +258,29 @@
                 <button type="button" class="btn btn-popover function variable"><span class="glyphicon glyphicon-triangle-top" aria-hidden="true">변수</span></button>
             </div>
             <div class="col-xs-5">
-                <button type="button" class="btn key btn-const">pi</button>
-                <button type="button" class="btn key btn-const">e</button>
+                <button type="button" class="btn key btn-const pc">pi</button>
+                <button type="button" class="btn key btn-const pc">e</button>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-6">
-                <button type="button" class="btn key btn-default">1</button>
-                <button type="button" class="btn key btn-default">2</button>
-                <button type="button" class="btn key btn-default">3</button></br>
-                <button type="button" class="btn key btn-default">4</button>
-                <button type="button" class="btn key btn-default">5</button>
-                <button type="button" class="btn key btn-default">6</button></br>
-                <button type="button" class="btn key btn-default">7</button>
-                <button type="button" class="btn key btn-default">8</button>
-                <button type="button" class="btn key btn-default">9</button></br>
+                <button type="button" class="btn key btn-default pc">1</button>
+                <button type="button" class="btn key btn-default pc">2</button>
+                <button type="button" class="btn key btn-default pc">3</button></br>
+                <button type="button" class="btn key btn-default pc">4</button>
+                <button type="button" class="btn key btn-default pc">5</button>
+                <button type="button" class="btn key btn-default pc">6</button></br>
+                <button type="button" class="btn key btn-default pc">7</button>
+                <button type="button" class="btn key btn-default pc">8</button>
+                <button type="button" class="btn key btn-default pc">9</button></br>
                 <button type="button" class="btn key btn-primary">.</button>
-                <button type="button" class="btn key btn-default">0</button>
+                <button type="button" class="btn key btn-default pc">0</button>
                 <button type="button" class="btn key btn-warning" value="EV">=</button>
-                <button type="button" class="btn key btn-default bracket">(</button>
-                <button type="button" class="btn key btn-default bracket">)</button>
-                <button type="button" class="btn key btn-primary dot">,</button>
-                <button type="button" class="btn key btn-default bracket">[</button>
-                <button type="button" class="btn key btn-default bracket">]</button>
+                <button type="button" class="btn key btn-default bracket pc">(</button>
+                <button type="button" class="btn key btn-default bracket pc">)</button>
+                <button type="button" class="btn key btn-primary dot pc">,</button>
+                <button type="button" class="btn key btn-default bracket pc">[</button>
+                <button type="button" class="btn key btn-default bracket pc">]</button>
             </div>
             <div class="row col-xs-6 RightLayout">
                 <div class="col-xs-4 ">
@@ -231,51 +309,33 @@
     </div>
     <div id="plustab" class="col-xs-4">
         <div class="addPmeter">
-            <button type="button" class="btn btn-default modify" value="RM">
-                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="btn btn-default modify" value="RM">
-                    <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="btn btn-default modify" value="RM">
-                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="btn btn-default modify" value="RM">
+            <button type="button" class="btn btn-default modify" value="DN">
                     <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
             </button>
+            <button type="button" class="btn btn-default modify" value="RI">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            </button>
         </div>
-        <button type="button" class="btn btn-success modify enter" value="RM">
-                <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
-        </button>
-        <br /><br />
-        <table id="myTable" class="table table-bordered">
-            <tr class="line">
-                <td>[</td>
-                <td><input type="text" maxlength=1 class="form-control vectorInsert" id="exampleInputName2" placeholder="0"></td>
-                <td>,</td>
-                <td><input type="text" maxlength=1 class="form-control vectorInsert" id="exampleInputName2" placeholder="0"></td>
-                <td>,</td>
-                <td><input type="text" maxlength=1 class="form-control vectorInsert" id="exampleInputName2" placeholder="0" only></td>
-                <td>]</td>
-            </tr>
-            <tr>
-                <td>[</td>
-                <td><input type="text" maxlength=1 class="form-control vectorInsert" id="exampleInputName2" placeholder="0"></td>
-                <td>,</td>
-                <td><input type="text" maxlength=1 class="form-control vectorInsert" id="exampleInputName2" placeholder="0"></td>
-                <td>,</td>
-                <td><input type="text" maxlength=1 class="form-control vectorInsert" id="exampleInputName2" placeholder="0"></td>
-                <td>]</td>
-            </tr>
-            <tr>
-                <td>[</td>
-                <td><input type="text" maxlength=1 class="form-control vectorInsert" id="exampleInputName2" placeholder="0"></td>
-                <td>,</td>
-                <td><input type="text" maxlength=1 class="form-control vectorInsert" id="exampleInputName2" placeholder="0"></td>
-                <td>,</td>
-                <td><input type="text" maxlength=1 class="form-control vectorInsert" id="exampleInputName2" placeholder="0"></td>
-                <td>]</td>
-            </tr>
+        <button type="button" class="btn btn-success modify enter" value="EN">입력</button>
+        <button type="button" class="btn btn-warning modify next">다음</button>
+        <br><br>
+        <table class="table table-bordered">
+            <tbody id="myTable">
+                <tr id="row-1">
+                    <td>[</td>
+                    <td><input type="text" class="form-control key vectorInsert row-1 col-1" value="0"></td>
+                    <td>,</td>
+                    <td><input type="text" class="form-control key vectorInsert row-1 col-2" value="0"></td>
+                    <td class="lastcol">]</td> 
+                </tr>
+                <tr id="row-2">
+                    <td>[</td>
+                    <td><input type="text" class="form-control key vectorInsert row-2 col-1" value="0"></td>
+                    <td>,</td>
+                    <td><input type="text" class="form-control key vectorInsert row-2 col-2" value="0"></td>
+                    <td class="lastcol">]</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>

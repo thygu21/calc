@@ -14,6 +14,7 @@
     margin-top: 349px;
     padding: 2px;
     font-size: 10px;
+    display: none;
 }
 #plustab .btn-default
 {
@@ -143,15 +144,22 @@
 }
 .vectorInsert
 {
-    width: 16px;
-    height: 20px;
+    width: 45px;
+    height: 26px;
     padding: 3px 4px;
-    font-size: 10px;
+    font-size: 12px;
 }
 .enter
 {
     float: right;
-    width: 37px;
+    width: 60px;
+    height: 27px;
+    font-size: 18px;
+}
+.next
+{
+    float: left;
+    width: 60px;
     height: 27px;
     font-size: 18px;
 }
