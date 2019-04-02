@@ -62,14 +62,16 @@
 
                     if($("#plustab").is(':visible')) // plustab이 보일 때
                     {
-                        $(".pc").click(function() // 숫자+변수+기본함수 버튼을 눌렀을 때
+                        $(".pc").click(function(k) // 숫자+변수+기본함수 버튼을 눌렀을 때
                         {
+                            k.stopPropagation();
                             displayProcess += $(this).text()
                             $(".row-"+rows+".col-"+cols).val(displayProcess);
                         });
 
-                        $(".next").click(function() // 칸 이동
+                        $(".next").click(function(k) // 칸 이동
                         {
+                            k.stopPropagation();
                             displayProcess = '';
 
                             if(cols < mxcols) //  행 이동
@@ -87,14 +89,16 @@
 
                         }); 
 
-                        $('.arrow').click(function() // 행렬 칸 내에서의 지우기
+                        $('.arrow').click(function(k) // 행렬 칸 내에서의 지우기
                         {
+                            k.stopPropagation();
                             displayProcess = remove(displayProcess);
                             $(".row-"+rows+".col-"+cols).val(displayProcess);
                         });
 
-                        $(".modify").click(function() // 행렬 크기 조절버튼 혹은 대입 버튼을 눌렀을 때
+                        $(".modify").click(function(k) // 행렬 크기 조절버튼 혹은 대입 버튼을 눌렀을 때
                         {
+                            k.stopPropagation();
                             if($(this).val() == 'DN' && mxrows < 5) // 아래로 늘리기
                             {
                                 mxrows += 1;
