@@ -28,20 +28,14 @@
             let cols = 1;
             $('#result').text(displayValue);
 
-            $(document).on("click",".key",function(e) //키 입력, 사실상 메인
+            $(document).on("click",".key",function(e) //키 입력, 사실상 메인. 생성된 html 팝업요소의 접근을 위한 on()사용
             {
                 if(displayValue == '0') 
                     displayValue = '';
                 
-                if($(this).val() == 'Help') // 도움말 처리
-                {
-                    console.log(1);
-                }
-
                 $(".qna").click(function(k)
                 {
-                    k.stopPropagation();
-                    console.log(2);
+                    k.stopImmediatePropagation();
                 });
 
                 if($(this).val() == 'PR' || $(this).val() == 'DO' || $(this).val() == 'CR') //행렬식 대입을 위한 토글창 오픈
@@ -64,14 +58,13 @@
                     {
                         $(".pc").click(function(k) // 숫자+변수+기본함수 버튼을 눌렀을 때
                         {
-                            k.stopPropagation();
                             displayProcess += $(this).text()
                             $(".row-"+rows+".col-"+cols).val(displayProcess);
+                            k.stopImmediatePropagation();
                         });
 
                         $(".next").click(function(k) // 칸 이동
                         {
-                            k.stopPropagation();
                             displayProcess = '';
 
                             if(cols < mxcols) //  행 이동
@@ -86,19 +79,18 @@
                                 cols = 1
                                 rows = 1
                             }
-
+                            k.stopImmediatePropagation();
                         }); 
 
                         $('.arrow').click(function(k) // 행렬 칸 내에서의 지우기
                         {
-                            k.stopPropagation();
                             displayProcess = remove(displayProcess);
                             $(".row-"+rows+".col-"+cols).val(displayProcess);
+                            k.stopImmediatePropagation();
                         });
 
                         $(".modify").click(function(k) // 행렬 크기 조절버튼 혹은 대입 버튼을 눌렀을 때
-                        {
-                            k.stopPropagation();
+                        {   
                             if($(this).val() == 'DN' && mxrows < 5) // 아래로 늘리기
                             {
                                 mxrows += 1;
@@ -143,15 +135,13 @@
                                 displayValue += ")";
 
                                 $('#result').text(displayValue);
-                                mxrows, mxcols, rows, cols = 2, 2, 1, 1;
                                 $('#plustab').hide();
                             }
-
+                            k.stopImmediatePropagation();
                         });
                     }
-
+                    
                 }
-
                 if($("#plustab").is(":hidden")) // plustab이 보이지 않을 때
                 {
                     if($(this).val() == 'EV') // 계산하기 버튼 누를 때
@@ -197,8 +187,10 @@
 
                     }
                 }
-                e.preventDefault()
+                e.preventDefault();
+
             })
+
         })
 
         function remove(display)
