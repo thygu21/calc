@@ -28,123 +28,119 @@
             let cols = 1;
             $('#result').text(displayValue);
 
-            $(document).on("click",".key",function(e) //키 입력, 사실상 메인. 생성된 html 팝업요소의 접근을 위한 on()사용
+            $(document).on("click",".procession",function(k) //토글 창 on,off , 생성된 html 팝업요소의 접근을 위한 on()사용
             {
                 if(displayValue == '0') 
                     displayValue = '';
-                
-                $(".qna").click(function(k)
+
+                // slice(-3,-1)은 마지막에서 세번째, 두번째 문자로 cross와 dot의 중복 클릭을 했을 때 입력을 막기 위함
+                if(($(this).val() == 'DO' || $(this).val() == 'CR') && (displayValue.slice(-3,-1) != "do" || sidplayValue.slice(-3,-1) != "os")) 
+                    displayValue += $(this).text();
+
+                if($("#plustab").is(':visible'))
                 {
-                    k.stopImmediatePropagation();
-                });
-
-                if($(this).val() == 'PR' || $(this).val() == 'DO' || $(this).val() == 'CR') //행렬식 대입을 위한 토글창 오픈
-                {
-                    // slice(-3,-1)은 마지막에서 세번째, 두번째 문자다 cross와 dot의 중복 클릭을 했을 때 입력을 막기 위함
-                    if(($(this).val() == 'DO' || $(this).val() == 'CR') && (displayValue.slice(-3,-1) != "do" || sidplayValue.slice(-3,-1) != "os")) 
-                        displayValue += $(this).text();
-                    
-                    if($("#plustab").is(':visible'))
-                    {
-                        $('#plustab').hide();
-                    }
-                    else
-                    {
-                        $('#plustab').show();
-                    }
-                    
-                    $(".row-"+rows+".col-"+cols).focus(); // 정해진 칸에 포커스
-
-                    if($("#plustab").is(':visible')) // plustab이 보일 때
-                    {
-                        $(".pc").click(function(k) // 숫자+변수+기본함수 버튼을 눌렀을 때
-                        {
-                            displayProcess += $(this).text()
-                            $(".row-"+rows+".col-"+cols).val(displayProcess);
-                            k.stopImmediatePropagation();
-                        });
-
-                        $(".next").click(function(k) // 칸 이동
-                        {
-                            displayProcess = '';
-
-                            if(cols < mxcols) //  행 이동
-                                cols += 1;
-                            else if(rows < mxrows) //같은 행의 숫자가 다 찼으면 한 열 아래로
-                            {
-                                rows += 1;
-                                cols = 1;
-                            }
-                            else // 모든 칸이 다 찼으면 1열 1칸으로 이동
-                            {
-                                cols = 1
-                                rows = 1
-                            }
-                            k.stopImmediatePropagation();
-                        }); 
-
-                        $('.arrow').click(function(k) // 행렬 칸 내에서의 지우기
-                        {
-                            displayProcess = remove(displayProcess);
-                            $(".row-"+rows+".col-"+cols).val(displayProcess);
-                            k.stopImmediatePropagation();
-                        });
-
-                        $(".modify").click(function(k) // 행렬 크기 조절버튼 혹은 대입 버튼을 눌렀을 때
-                        {   
-                            if($(this).val() == 'DN' && mxrows < 5) // 아래로 늘리기
-                            {
-                                mxrows += 1;
-                                $("#myTable").append("<tr id='row-" + mxrows + "'></tr>");
-                                $("#row-"+mxrows).append("<td>[</td>");
-                                $("#row-"+mxrows).append("<td><input type='text' class='form-control key vectorInsert row-" + mxrows + " col-1' value='0'></td>");
-                                for(i = 2; i <= mxcols; i++)
-                                {
-                                    $("#row-"+mxrows).append("<td>,</td>");
-                                    $("#row-"+mxrows).append("<td><input type='text' class='form-control key vectorInsert row-" + mxrows + " col-" + i + "' value='0'></td>");
-                                }
-                                $("#row-"+mxrows).append("<td class='lastcol'>]</td>");
-                                
-                            }
-                            else if($(this).val() == 'RI' && mxcols < 5) // 오른쪽으로 늘리기
-                            {
-                                $(".lastcol").remove();
-                                mxcols += 1;
-                                for(i = 1; i <= mxrows; i++)
-                                {
-                                    $("#row-"+i).append("<td>,</td>");
-                                    $("#row-"+i).append("<td><input type='text' class='form-control key vectorInsert row-" + i + " col-" + mxcols + "' value='0'></td>");
-                                    $("#row-"+i).append("<td class='lastcol'>]</td>");
-                                }
-                            }
-                            else if($(this).val() == "EN")
-                            {
-                                displayValue += "(";
-                                for(i = 1; i <= mxrows; i++)
-                                {
-                                    displayValue += "[";
-                                    displayValue += $(".row-"+i+".col-1").val();
-                                    for(j = 2; j <= mxcols; j++)
-                                    {
-                                        displayValue += ",";
-                                        displayValue += $(".row-"+i+".col-"+j).val();
-                                    }
-                                    displayValue += "]";
-                                    displayValue += ",";
-                                }
-                                displayValue = displayValue.slice(0,-1); //,하나 지우기
-                                displayValue += ")";
-
-                                $('#result').text(displayValue);
-                                $('#plustab').hide();
-                            }
-                            k.stopImmediatePropagation();
-                        });
-                    }
-                    
+                    $('#plustab').hide();
                 }
-                if($("#plustab").is(":hidden")) // plustab이 보이지 않을 때
+                else
                 {
+                    $('#plustab').show();
+                    $(".row-"+rows+".col-"+cols).focus(); // 정해진 칸에 포커스
+                }
+
+                k.stopImmediatePropagation();
+            })
+
+            $(document).on("click",".key",function(e) //키 입력, 행렬 탭이 닫혀 있을 때 동작
+            {
+                if(displayValue == '0') 
+                    displayValue = '';
+
+                if($("#plustab").is(':visible')) // plustab이 보일 때
+                {
+                    if($(this).hasClass("pc")) // 숫자+변수+기본함수 버튼을 눌렀을 때
+                    {
+                        displayProcess += $(this).text()
+                        $(".row-"+rows+".col-"+cols).val(displayProcess);
+                    }
+
+                    if($(this).hasClass("next")) // 칸 이동
+                    {
+                        displayProcess = '';
+
+                        if(cols < mxcols) //  행 이동
+                            cols += 1;
+                        else if(rows < mxrows) //같은 행의 숫자가 다 찼으면 한 열 아래로
+                        {
+                            rows += 1;
+                            cols = 1;
+                        }
+                        else // 모든 칸이 다 찼으면 1열 1칸으로 이동
+                        {
+                            cols = 1
+                            rows = 1
+                        }
+                    }
+
+                    if($(this).hasClass("arrow")) // 행렬 칸 내에서의 지우기
+                    {
+                        displayProcess = remove(displayProcess);
+                        $(".row-"+rows+".col-"+cols).val(displayProcess);
+                    }
+
+                    if($(this).hasClass("modify")) // 행렬 크기 조절버튼 혹은 대입 버튼을 눌렀을 때
+                    {   
+                        if($(this).val() == 'DN' && mxrows < 5) // 아래로 늘리기
+                        {
+                            mxrows += 1;
+                            $("#myTable").append("<tr id='row-" + mxrows + "'></tr>");
+                            $("#row-"+mxrows).append("<td>[</td>");
+                            $("#row-"+mxrows).append("<td><input type='text' class='form-control key vectorInsert row-" + mxrows + " col-1' value='0'></td>");
+                            for(i = 2; i <= mxcols; i++)
+                            {
+                                $("#row-"+mxrows).append("<td>,</td>");
+                                $("#row-"+mxrows).append("<td><input type='text' class='form-control key vectorInsert row-" + mxrows + " col-" + i + "' value='0'></td>");
+                            }
+                            $("#row-"+mxrows).append("<td class='lastcol'>]</td>");
+                            
+                        }
+                        else if($(this).val() == 'RI' && mxcols < 5) // 오른쪽으로 늘리기
+                        {
+                            $(".lastcol").remove();
+                            mxcols += 1;
+                            for(i = 1; i <= mxrows; i++)
+                            {
+                                $("#row-"+i).append("<td>,</td>");
+                                $("#row-"+i).append("<td><input type='text' class='form-control key vectorInsert row-" + i + " col-" + mxcols + "' value='0'></td>");
+                                $("#row-"+i).append("<td class='lastcol'>]</td>");
+                            }
+                        }
+                        else if($(this).val() == "EN") //완성된 행렬 출력하기
+                        {
+                            displayValue += "(";
+                            for(i = 1; i <= mxrows; i++)
+                            {
+                                displayValue += "[";
+                                displayValue += $(".row-"+i+".col-1").val();
+                                for(j = 2; j <= mxcols; j++)
+                                {
+                                    displayValue += ",";
+                                    displayValue += $(".row-"+i+".col-"+j).val();
+                                }
+                                displayValue += "]";
+                                displayValue += ",";
+                            }
+                            displayValue = displayValue.slice(0,-1); //하나 지우기(,)
+                            displayValue += ")";
+
+                            $('#result').text(displayValue);
+                            $('#plustab').hide();
+                        }
+                    }
+                }
+
+                else if($("#plustab").is(":hidden")) // plustab이 보이지 않을 때
+                {
+                    
                     if($(this).val() == 'EV') // 계산하기 버튼 누를 때
                     {
                         try
@@ -187,13 +183,10 @@
                         }
 
                     }
+                    e.preventDefault();
                 }
-                e.preventDefault();
-
             })
-
         })
-
         function remove(display)
         {
             let context = display.slice(-3,length.display);
@@ -323,17 +316,20 @@
         </div>
     </div>
     <div id="plustab" class="col-xs-4">
-        <div class="addPmeter">
-            <button type="button" class="btn btn-default modify" value="DN">
-                    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="btn btn-default modify" value="RI">
-                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-            </button>
+        <div class="col-xs-12 RightLayout">
+            <div class="addPmeter">
+                <button type="button" class="btn key btn-default modify" value="DN">
+                        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                </button>
+                <button type="button" class="btn key btn-default modify" value="RI">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div>
+                <button type="button" class="btn key btn-success modify enter" value="EN">입력</button>
+                <button type="button" class="btn key btn-warning modify next">다음</button>
+            </div>
         </div>
-        <button type="button" class="btn btn-success modify enter" value="EN">입력</button>
-        <button type="button" class="btn btn-warning modify next">다음</button>
-        <br><br>
         <table class="table table-bordered">
             <tbody id="myTable">
                 <tr id="row-1">
