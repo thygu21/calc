@@ -1384,8 +1384,7 @@ a.bg-info:hover {
 }
 .bg-warning {
   background-color: #86bbdc;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin: 5px 0px;
 }
 a.bg-warning:hover {
   background-color: #f7ecb5;
