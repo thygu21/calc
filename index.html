@@ -185,6 +185,7 @@
                     }
                     e.preventDefault();
                 }
+                e.stopImmediatePropagation();
             })
         })
         function remove(display)
@@ -283,7 +284,7 @@
                 <button type="button" class="btn key btn-default pc">9</button></br>
                 <button type="button" class="btn key btn-primary">.</button>
                 <button type="button" class="btn key btn-default pc">0</button>
-                <button type="button" class="btn key btn-warning" value="EV">=</button>
+                <button type="button" class="btn key btn-warning">=</button>
                 <button type="button" class="btn key btn-default bracket pc">(</button>
                 <button type="button" class="btn key btn-default bracket pc">)</button>
                 <button type="button" class="btn key btn-primary dot pc">,</button>
@@ -291,9 +292,12 @@
                 <button type="button" class="btn key btn-default bracket pc">]</button>
             </div>
             <div class="row col-xs-6 RightLayout">
-                <div class="col-xs-4 ">
+                <div class="col-xs-4">
                     <button type="button" class="btn key btn-danger arrow" value="RM">
                         <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="btn key btn-success ev" value="EV">
+                        EV
                     </button>
                 </div>
                 <div class="col-xs-8 RightLayout">

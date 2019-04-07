@@ -45,8 +45,15 @@
 }
 .arrow
 {
-	width: 75px;
-	height: 175px;
+    width: 75px;
+    height: 60px;
+    font-size: 27px;
+}
+.ev
+{
+    width: 75px;
+    height: 130px;
+    font-size: 27px;
 }
 .erase
 {
