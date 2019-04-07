@@ -40,7 +40,8 @@
 
                 if($(this).val() == 'PR' || $(this).val() == 'DO' || $(this).val() == 'CR') //행렬식 대입을 위한 토글창 오픈
                 {
-                    if($(this).val() == 'DO' || $(this).val() == 'CR')
+                    // slice(-3,-1)은 마지막에서 세번째, 두번째 문자다 cross와 dot의 중복 클릭을 했을 때 입력을 막기 위함
+                    if(($(this).val() == 'DO' || $(this).val() == 'CR') && (displayValue.slice(-3,-1) != "do" || sidplayValue.slice(-3,-1) != "os")) 
                         displayValue += $(this).text();
                     
                     if($("#plustab").is(':visible'))
