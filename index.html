@@ -5,11 +5,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="bootstrap-3.3.2-dist/css/bootstrap.css"></link>
-    <link rel="stylesheet" type="text/css" href="mine/main.css"></link>
+    <link rel="stylesheet" type="text/css" href="package/css/bootstrap.css"></link>
+    <link rel="stylesheet" type="text/css" href="package/main.css"></link>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="bootstrap-3.3.2-dist/js/bootstrap.js"></script>
-    <script src='math.js' type='text/javascript'></script>
+    <script src="package/js/bootstrap.js"></script>
+    <script src='package/math.js' type='text/javascript'></script>
     <script type='text/javascript'>
         var selectTxt = ''; // 복사값 저장을 위한 전역변수
 
@@ -253,7 +253,8 @@
         {
             let context = display.slice(-3,length.display);
             // 여러 함수에 대한 한번에 지우기 처리
-            if(context == "sin" || context == "cos" || context == "tan" || context == "exp" || context == "log" || context == "qrt" || context == "dot" || context == "oss" || context == "inv" || context == "det")
+            if(context == "sin" || context == "cos" || context == "tan" || context == "exp" || context == "log" 
+            || context == "qrt" || context == "dot" || context == "oss" || context == "inv" || context == "det")
             {
                 if(context == "qrt")
                 {
@@ -362,12 +363,12 @@
                     </button>
                 </div>
                 <div class="col-xs-8 RightLayout">
-                    <button type="button" class="btn key btn-primary">+</button>
-                    <button type="button" class="btn key btn-primary">-</button></br>
-                    <button type="button" class="btn key btn-primary">*</button>
-                    <button type="button" class="btn key btn-primary">/</button></br>
-                    <button type="button" class="btn key btn-primary">%</button>
-                    <button type="button" class="btn key btn-primary">^</button></br>
+                    <button type="button" class="btn key btn-primary pc">+</button>
+                    <button type="button" class="btn key btn-primary pc">-</button></br>
+                    <button type="button" class="btn key btn-primary pc">*</button>
+                    <button type="button" class="btn key btn-primary pc">/</button></br>
+                    <button type="button" class="btn key btn-primary pc">%</button>
+                    <button type="button" class="btn key btn-primary pc">^</button></br>
                 </div>
             </div>
             <div>
